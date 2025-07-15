@@ -1,6 +1,6 @@
 export default class {
   constructor () {
-    this.address = 'http://192.168.1.6:3000'
+    this.address = 'http://localhost:3000'
     this.pormts
   }
 
