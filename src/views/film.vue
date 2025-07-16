@@ -1,14 +1,18 @@
 <script setup>
   import { onMounted, ref } from 'vue';
-  import db from '../libs/dbinter.js'
+  import dbase from '../libs/dbinter.js'
   import contPane from '../components/controlPanel.vue'
 
-  let conn = new db()
   let promts
+  let isHandShake = false
+  let locale = 'ru'
 
   let title = ref()
   let poster = ref()
   let desc = ref()
+  let chatIsOn = ref(false)
+  let currMessage = ref()
+
 
 
   function setFilm (data) {
@@ -21,32 +25,60 @@
 
 
   async function anotherFilm () {
-    let testPromt = `
-      Спасибо, обязательно посмотрю! Посоветуй что нибудь еще, веселый легкий фильм.
-      Верни ответ строго в следующем формате: 
-      { 
-        'title' : название фильма или сериала, 
-        'poster' : ссылка на картинку из фильма или сериала, ищи  картинку на сайте imdb.com 
-        'desc' : описание фильма или сериала
-      }
-    `
+    let promt, res
 
-    let res  = await conn.sendPromt(testPromt)
-    let data = res[0]['output']
-    setFilm(data)
+    promt = `${promts.another} ${promts.formatter}`
+
+    if (!isHandShake) {
+      promt = `${promts.welcome} ${promts.formatter}`
+      isHandShake = true
+    }
+
+    console.log(promt);
+
+    res  = await dbase.sendPromt(promt)
+    setFilm(res)
+  }
+
+
+  async function saveFilm () {
+    let req = await dbase.saveFilm(locale, title.value, poster.value, desc.value)
+    console.log(req);
+    return req
+  }
+
+
+  async function toggleChat () {
+    chatIsOn.value = !chatIsOn.value
+  }
+
+
+  async function sendMessage () {
+    let promt, res
+
+    promt = `${currMessage.value} ${promts.formatter}`
+    chatIsOn.value = false
+    currMessage.value = ''
+
+    console.log(promt);
+
+    res  = await dbase.sendPromt(promt)
+    console.log(res);
+    setFilm(res)
   }
 
 
   onMounted(async () => {
-    let film = await conn.getCachedFilm()
+    // { id, locale, start_promt, another_promt, trailer}
+    promts = await dbase.getPromts(locale)
+    console.log(promts);
+
+    let film = await dbase.getCachedFilm(locale)
+
     title.value = film.title
     poster.value = film.poster
     desc.value = film.desc
 
-    // { id, locale, start_promt, another_promt, trailer}
-    promts = await conn.getPromts('ru')
-    console.log(promts);
-    
   })
 
 </script>
@@ -78,7 +110,17 @@
 
       <contPane class="rf--controlsList" 
         @updateFilm="anotherFilm"
+        @like="saveFilm"
+        @toggleChat="toggleChat"
       ></contPane>
+
+      <form @submit.prevent="sendMessage" class="rf--chat" v-show="chatIsOn">
+        <input
+          class="rf--chatInput" v-model="currMessage"
+          type="textarea"  cols="30" rows="10" wrap="soft"
+        >
+        <input class="rf--chatSend" type="submit" value="Отправить">
+      </form>
     </div>
 
   </section>
@@ -207,5 +249,41 @@
     height: 80px;
 
     margin: 0; padding: 0;
+  }
+
+  .rf--chat {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    margin: 10px;
+  
+    
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-radius: 10px;
+    overflow: hidden;
+
+    height: 100px;
+  }
+
+
+  .rf--chatSend {
+    color: white;
+    border: none;
+    background: green;
+    padding: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+
+  .rf--chatInput {
+    flex-grow: 1;
+    border: none;
+    outline: none;
+    background: rgba(255, 255, 255, .9);
+
+    font-size: 1rem;
+    padding: 10px;
   }
 </style>

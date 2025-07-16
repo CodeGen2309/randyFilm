@@ -4,7 +4,7 @@
 
 <template>
   <ul class="ctpanel">
-    <li class="ctpanel--item">
+    <li class="ctpanel--item" @click="$emit('like')">
       <img class="ctpanel--icon" src="/assets/icons/like.svg">
     </li>
 
@@ -16,7 +16,7 @@
       <img class="ctpanel--icon" src="/assets/icons/google.svg">
     </li>
     
-    <li class="ctpanel--item">
+    <li class="ctpanel--item" @click="$emit('toggleChat')">
       <img class="ctpanel--icon" src="/assets/icons/ai.svg">
     </li>
     
