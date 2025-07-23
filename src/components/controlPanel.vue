@@ -12,7 +12,7 @@
       <img class="ctpanel--icon" src="/assets/icons/trailer.svg">
     </li> -->
 
-    <li class="ctpanel--item">
+    <li class="ctpanel--item" @click="$emit('google')">
       <img class="ctpanel--icon" src="/assets/icons/google.svg">
     </li>
     

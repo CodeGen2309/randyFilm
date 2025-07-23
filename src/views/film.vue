@@ -2,6 +2,7 @@
   import { onMounted, ref } from 'vue';
   import dbase from '../libs/dbinter.js'
   import contPane from '../components/controlPanel.vue'
+  import FadingRect from '@/components/loaders/fadingRect.vue';
 
   let promts
   let isHandShake = false
@@ -12,6 +13,7 @@
   let desc = ref()
   let chatIsOn = ref(false)
   let currMessage = ref()
+  let showLoader = ref(false)
 
 
 
@@ -36,7 +38,9 @@
 
     console.log(promt);
 
+    showLoader.value = true
     res  = await dbase.sendPromt(promt)
+    showLoader.value = false
     setFilm(res)
   }
 
@@ -47,6 +51,10 @@
     return req
   }
 
+  async function googleFilm () {
+    let link = `https://www.google.com/search?q=${title.value} film watch online`
+    window.open(link)
+  }
 
   async function toggleChat () {
     chatIsOn.value = !chatIsOn.value
@@ -56,14 +64,14 @@
   async function sendMessage () {
     let promt, res
 
-    promt = `${currMessage.value} ${promts.formatter}`
+    promt = currMessage.value
     chatIsOn.value = false
     currMessage.value = ''
 
-    console.log(promt);
-
+    showLoader.value = true
     res  = await dbase.sendPromt(promt)
-    console.log(res);
+    showLoader.value = false
+
     setFilm(res)
   }
 
@@ -104,23 +112,32 @@
         </div>
       </div>
 
-      <div class="rf--menu">
+      <!-- <div class="rf--menu">
         <img src="/assets/icons/donut.svg">
-      </div>
+      </div> -->
 
       <contPane class="rf--controlsList" 
         @updateFilm="anotherFilm"
         @like="saveFilm"
         @toggleChat="toggleChat"
+        @google="googleFilm"
       ></contPane>
 
-      <form @submit.prevent="sendMessage" class="rf--chat" v-show="chatIsOn">
-        <input
-          class="rf--chatInput" v-model="currMessage"
-          type="textarea"  cols="30" rows="10" wrap="soft"
-        >
-        <input class="rf--chatSend" type="submit" value="Отправить">
-      </form>
+      <transition name="fadeDownAnim">
+        <form @submit.prevent="sendMessage" class="rf--chat" v-show="chatIsOn">
+          <input class="rf--chatInput" v-model="currMessage" 
+            type="textarea"
+          >
+          <input class="rf--chatSend" type="submit" value="SEND">
+        </form>
+      </transition>
+
+
+      <transition name="fadeInAnim">
+        <div v-if="showLoader" class="rf--loader">
+          <FadingRect class="rf--loaderIcon"></FadingRect>
+        </div>
+      </transition>
     </div>
 
   </section>
@@ -137,6 +154,8 @@
     width: 100%; 
     height: 100vh;
     max-height: 100dvh;
+    max-width: 500px;
+    margin: auto;
   }
 
 
@@ -146,6 +165,19 @@
     overflow: hidden;
 
     box-sizing: border-box;
+  }
+
+  .rf--loader {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, .8);
+    opacity: 1;
+    transition: .3s;
   }
 
 
@@ -170,6 +202,7 @@
     position: absolute;
     left: 0; top: 0;
     height: 100%;
+    width: 100%;
     overflow: scroll;
 
     color: white;
@@ -259,18 +292,19 @@
     
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    border-radius: 10px;
-    overflow: hidden;
+    gap: 10px;
+    /* overflow: hidden; */
 
-    height: 100px;
+    height: 150px;
+    transition: .3s;
   }
 
 
   .rf--chatSend {
     color: white;
     border: none;
-    background: green;
+    background: #C02942;
+    border-radius: 10px;
     padding: 10px;
     font-weight: 600;
     font-size: 1rem;
@@ -281,9 +315,24 @@
     flex-grow: 1;
     border: none;
     outline: none;
-    background: rgba(255, 255, 255, .9);
-
+    background: rgba(255, 255, 255, 1);
+    border-radius: 10px;
+    box-shadow: 1px 1px 120px 2px rgba(0, 0, 0, .6);
+    
     font-size: 1rem;
     padding: 10px;
+    opacity: 1;
   }
+
+
+  .fadeInAnim-enter-active, .fadeInAnim-leave-active {
+    opacity: 0;
+    transform: scale(2);
+  }
+
+  .fadeDownAnim-enter-active, .fadeDownAnim-leave-active {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+
 </style>
