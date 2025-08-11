@@ -1,3 +1,7 @@
+# Custom
+public/tokens.json
+
+
 # Logs
 logs
 *.log
@@ -18,7 +22,7 @@ coverage
 /cypress/screenshots/
 
 # Editor directories and files
-.vscode/*
+.vscode/
 !.vscode/extensions.json
 .idea
 *.suo
@@ -28,3 +32,4 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+public/api/index.php

@@ -6,14 +6,14 @@
 
   let promts
   let isHandShake = false
-  let locale = 'ru'
+  let locale      = 'ru'
 
-  let title = ref()
-  let poster = ref()
-  let desc = ref()
-  let chatIsOn = ref(false)
+  let title       = ref()
+  let poster      = ref()
+  let desc        = ref()
+  let chatIsOn    = ref(false)
   let currMessage = ref()
-  let showLoader = ref(false)
+  let showLoader  = ref(false)
 
 
 
