@@ -1,5 +1,6 @@
 export default {
-  address: 'http://192.168.1.6:3000',
+  address: 'http://176.194.115.56:3000',
+  // address: '/api/',
 
   getPromts: async function (locale) {
     let res = await fetch(`${this.address}/get-promts/${locale}`)
@@ -9,11 +10,17 @@ export default {
 
 
   getCachedFilm: async function (locale) {
-    let link, res
+    let link, res, midware, json
 
-    link = `${this.address}/get-cached-film/${locale}`
+    // link = `${this.address}/get-cached-film/${locale}`
+    link = `./api/`
     res = await fetch(link)
-    return await res.json()
+    midware = await res.json()
+    json = JSON.parse(midware)
+
+    console.log(json);
+
+    return json
   },
 
 

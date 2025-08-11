@@ -54,7 +54,7 @@
 
 
   .ctpanel--item:hover {
-    background: blueviolet;
+    background: #fbc531;
   }
 
   .ctpanel--icon {

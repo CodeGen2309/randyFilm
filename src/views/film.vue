@@ -27,20 +27,21 @@
 
 
   async function anotherFilm () {
-    let promt, res
+    // let promt, res
 
-    promt = `${promts.another} ${promts.formatter}`
+    // promt = `${promts.another} ${promts.formatter}`
 
-    if (!isHandShake) {
-      promt = `${promts.welcome} ${promts.formatter}`
-      isHandShake = true
-    }
+    // if (!isHandShake) {
+    //   promt = `${promts.welcome} ${promts.formatter}`
+    //   isHandShake = true
+    // }
 
-    console.log(promt);
+    // console.log(promt);
 
-    showLoader.value = true
-    res  = await dbase.sendPromt(promt)
-    showLoader.value = false
+    // showLoader.value = true
+    // res  = await dbase.sendPromt(promt)
+    // showLoader.value = false
+    let res = await dbase.getCachedFilm(locale)
     setFilm(res)
   }
 
@@ -78,15 +79,15 @@
 
   onMounted(async () => {
     // { id, locale, start_promt, another_promt, trailer}
-    promts = await dbase.getPromts(locale)
-    console.log(promts);
+    // promts = await dbase.getPromts(locale)
+    // console.log(promts);
 
     let film = await dbase.getCachedFilm(locale)
+    console.log(film);
 
     title.value = film.title
     poster.value = film.poster
     desc.value = film.desc
-
   })
 
 </script>
@@ -111,10 +112,6 @@
           <p class="rf--desc">{{ desc }}</p>
         </div>
       </div>
-
-      <!-- <div class="rf--menu">
-        <img src="/assets/icons/donut.svg">
-      </div> -->
 
       <contPane class="rf--controlsList" 
         @updateFilm="anotherFilm"
@@ -301,6 +298,7 @@
 
 
   .rf--chatSend {
+    position: relative;
     color: white;
     border: none;
     background: #C02942;
@@ -315,13 +313,19 @@
     flex-grow: 1;
     border: none;
     outline: none;
-    background: rgba(255, 255, 255, 1);
+    background: rgba(255, 255, 255, .6);
+    backdrop-filter: blur(10px);
     border-radius: 10px;
     box-shadow: 1px 1px 120px 2px rgba(0, 0, 0, .6);
     
     font-size: 1rem;
     padding: 10px;
     opacity: 1;
+    transition: .3s;
+  }
+
+  .rf--chatInput:focus {
+    background: rgba(255, 255, 255, 1);
   }
 
 
