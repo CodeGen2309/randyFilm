@@ -1,12 +1,11 @@
 <?
 
-$data = array(
-	'name'  => 'Маффин',
-	'price' => 100.0
-);		
+$data = [
+	'name'  => 'Маффин', 'price' => 100.0
+];		
 
 $ch = curl_init('http://176.194.115.56:3000/get-cached-film/ru');
-curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type:application/json']);
 // curl_setopt($ch, CURLOPT_POST, 1);
 // curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data, JSON_UNESCAPED_UNICODE)); 
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
