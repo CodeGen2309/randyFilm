@@ -11,18 +11,20 @@
   let title       = ref()
   let poster      = ref()
   let desc        = ref()
-  let chatIsOn    = ref(false)
   let currMessage = ref()
-  let showLoader  = ref(false)
+  
+  let showLoader  = ref( false )
+  let chatIsOn    = ref( false )
+
 
 
 
   function setFilm (data) {
     console.log(data);
 
-    title.value = data.title
+    title.value  = data.title
     poster.value = data.poster
-    desc.value = data.desc
+    desc.value   = data.desc
   }
 
 

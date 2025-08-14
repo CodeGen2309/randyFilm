@@ -2,23 +2,21 @@
 function sendRequest($message) {
   $file     = file_get_contents('../tokens.local');
   $token    = json_decode($file, true);
-
-  // $neiroURL = $token['n8nProd'];
   $neiroURL = $token['n8nTest'];
+  // $neiroURL = $token['n8nProd'];
 
-  $crlReq = curl_init();
-  $crlBody = json_encode(
-    ['message' => $message, 'ip' => $_SERVER['REMOTE_ADDR']]
-  );
+  $crlReq  = curl_init();
+  $rawBody = [ 'message' => $message, 'ip' => $_SERVER['REMOTE_ADDR'] ];
+  $crlBody = json_encode($rawBody);
 
-  curl_setopt_array(
-    $crlReq, 
+
+  curl_setopt_array( $crlReq, 
     [
-      CURLOPT_URL => $neiroURL,
+      CURLOPT_URL            => $neiroURL,
       CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
-      CURLOPT_POST => true,
-      CURLOPT_POSTFIELDS => $crlBody
+      CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
+      CURLOPT_POST           => true,
+      CURLOPT_POSTFIELDS     => $crlBody,
     ]
   );
 
@@ -26,7 +24,7 @@ function sendRequest($message) {
   curl_close($crlReq);
 
   $arResult = [
-    'body' => $crlBody,
+    'body'     => $crlBody,
     'response' => $crlRes,
   ];
 
@@ -35,7 +33,6 @@ function sendRequest($message) {
 
 
 $res = sendRequest('Посоветуй крутой фильм');
-
 ?>
 
 <pre style = "max-width: 100%;">
