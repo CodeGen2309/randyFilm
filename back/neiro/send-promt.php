@@ -1,14 +1,13 @@
 <?
-function sendRequest($message) {
-  $file     = file_get_contents('../tokens.local');
-  $token    = json_decode($file, true);
-  $neiroURL = $token['n8nTest'];
-  // $neiroURL = $token['n8nProd'];
+
+function sendPromt($message) {
+  $file     = file_get_contents('../tokens.json');
+  $tokens   = json_decode($file, true);
+  // $neiroURL = $token['n8nTest'];
+  $neiroURL = $tokens['n8nProd'];
 
   $crlReq  = curl_init();
-  $rawBody = [ 'message' => $message, 'ip' => $_SERVER['REMOTE_ADDR'] ];
-  $crlBody = json_encode($rawBody);
-
+  $body     = json_encode([ 'message' => $message, 'ip' => $_SERVER['REMOTE_ADDR'] ]);
 
   curl_setopt_array( $crlReq, 
     [
@@ -16,25 +15,24 @@ function sendRequest($message) {
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
       CURLOPT_POST           => true,
-      CURLOPT_POSTFIELDS     => $crlBody,
+      CURLOPT_POSTFIELDS     => $body,
     ]
   );
 
   $crlRes = curl_exec($crlReq);
   curl_close($crlReq);
 
-  $arResult = [
-    'body'     => $crlBody,
-    'response' => $crlRes,
-  ];
-
-  return $arResult;
+  return $crlRes;
 }
 
 
-$res = sendRequest('Посоветуй крутой фильм');
-?>
 
-<pre style = "max-width: 100%;">
-  <? print_r($res) ?>
-</pre>
+// $res = sendPromt($_POST['message']);
+// print(json_encode($res));
+// $data = json_decode($_POST);
+
+$raw = file_get_contents('php://input');
+$data = json_decode($raw);
+$res = sendPromt($data -> message);
+print_r($res)
+?>

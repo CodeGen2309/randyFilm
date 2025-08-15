@@ -1,41 +1,38 @@
 export default {
-  address: 'http://176.194.115.56:3000',
-  // address: '/api/',
+  // address: 'http://176.194.115.56:3000',
+  baseapi: '/api/base',
+  botapi: '/api/neiro',
 
   getPromts: async function (locale) {
-    let res = await fetch(`${this.address}/get-promts/${locale}`)
-    let promts = await res.json()
-    return promts
+    let link = `${this.baseapi}/get-promts.php?locale=${locale}`
+    let res = await fetch(link).then(raw => raw.json())
+    
+    return res
   },
 
 
   getCachedFilm: async function (locale) {
-    let link, res, midware, json
+    let link = `${this.baseapi}/get-cached-film.php?locale=${locale}`
+    let res = await fetch(link).then(raw => raw.json())
 
-    // link = `${this.address}/get-cached-film/${locale}`
-    link = `./api/`
-    res = await fetch(link)
-    midware = await res.json()
-    json = JSON.parse(midware)
-
-    console.log(json);
-
-    return json
+    return res
   },
 
 
-  sendPromt: async function (promt) {
+  sendPromt: async function (message) {
     let opts, link, res
 
     opts = {
       method: 'POST', 
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ promt })
+      headers: { "Content-type": "application/json" },
+      body: JSON.stringify({message}),
     }
 
-    link = `${this.address}/send-promt/`
-    res  = await fetch(link, opts)
-    return await res.json()
+    link = `${this.botapi}/send-promt.php`
+    res  = await fetch(link, opts).then(raw => raw.json())
+    console.log(res);
+    
+    return res
   },
 
 

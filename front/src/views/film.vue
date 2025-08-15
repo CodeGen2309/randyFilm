@@ -20,8 +20,6 @@
 
 
   function setFilm (data) {
-    console.log(data);
-
     title.value  = data.title
     poster.value = data.poster
     desc.value   = data.desc
@@ -29,21 +27,18 @@
 
 
   async function anotherFilm () {
-    // let promt, res
+    let promt, res
 
-    // promt = `${promts.another} ${promts.formatter}`
+    promt = `${promts.another} ${promts.formatter}`
 
-    // if (!isHandShake) {
-    //   promt = `${promts.welcome} ${promts.formatter}`
-    //   isHandShake = true
-    // }
+    if (!isHandShake) {
+      promt = `${promts.welcome} ${promts.formatter}`
+      isHandShake = true
+    }
 
-    // console.log(promt);
-
-    // showLoader.value = true
-    // res  = await dbase.sendPromt(promt)
-    // showLoader.value = false
-    let res = await dbase.getCachedFilm(locale)
+    showLoader.value = true
+    res  = await dbase.sendPromt(promt)
+    showLoader.value = false
     setFilm(res)
   }
 
@@ -81,11 +76,9 @@
 
   onMounted(async () => {
     // { id, locale, start_promt, another_promt, trailer}
-    // promts = await dbase.getPromts(locale)
-    // console.log(promts);
-
     let film = await dbase.getCachedFilm(locale)
-    console.log(film);
+    promts = await dbase.getPromts(locale)
+
 
     title.value = film.title
     poster.value = film.poster
