@@ -6,7 +6,7 @@
 
   let promts
   let isHandShake = false
-  let locale      = 'ru'
+  let locale      = 'en'
 
   let title       = ref()
   let poster      = ref()
@@ -79,6 +79,7 @@
     let film = await dbase.getCachedFilm(locale)
     promts = await dbase.getPromts(locale)
 
+    console.log(promts);
 
     title.value = film.title
     poster.value = film.poster
@@ -109,10 +110,8 @@
       </div>
 
       <contPane class="rf--controlsList" 
-        @updateFilm="anotherFilm"
-        @like="saveFilm"
-        @toggleChat="toggleChat"
-        @google="googleFilm"
+        @updateFilm="anotherFilm" @like="saveFilm"
+        @toggleChat="toggleChat"  @google="googleFilm"
       ></contPane>
 
       <transition name="fadeDownAnim">
@@ -326,12 +325,14 @@
 
   .fadeInAnim-enter-active, .fadeInAnim-leave-active {
     opacity: 0;
+    backdrop-filter: blur(20px);
     transform: scale(2);
   }
 
   .fadeDownAnim-enter-active, .fadeDownAnim-leave-active {
     opacity: 0;
     transform: translateY(-50px);
+    backdrop-filter: blur(0px);
   }
 
 </style>

@@ -1,16 +1,25 @@
 <script setup>
+  import upvote from '@/components/icons/upvote.vue';
+  import { ref } from 'vue';
+
+
+  let upvoteColor = ref('#cd7066')
+
+  function setGreen () {
+    upvoteColor.value = '#27ae60'
+  }
 </script>
 
 
 <template>
 <ul class="ctpanel">
-  <li class="ctpanel--item" @click="$emit('like')">
-    <img class="ctpanel--icon" src="/assets/icons/like.svg">
-  </li>
-
-  <!-- <li class="ctpanel--item">
-    <img class="ctpanel--icon" src="/assets/icons/trailer.svg">
+  <!-- <li class="ctpanel--item" @click="$emit('like')">
+    <img class="ctpanel--icon" src="/assets/icons/upvote.svg">
   </li> -->
+
+  <li class="ctpanel--item">
+    <upvote :color="upvoteColor" @click="setGreen"></upvote>
+  </li>
 
   <li class="ctpanel--item" @click="$emit('google')">
     <img class="ctpanel--icon" src="/assets/icons/google.svg">
