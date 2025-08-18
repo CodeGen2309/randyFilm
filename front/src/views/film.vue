@@ -1,12 +1,17 @@
 <script setup>
   import { onMounted, ref } from 'vue';
+  
+
   import dbase from '../libs/dbinter.js'
   import contPane from '../components/controlPanel.vue'
   import FadingRect from '@/components/loaders/fadingRect.vue';
 
-  let promts
+  // let promts
   let isHandShake = false
-  let locale      = 'en'
+
+  let webapp   = window.Telegram.WebApp
+  let userData = webapp.initDataUnsafe.user
+  let locale   = userData.language_code
 
   let title       = ref()
   let poster      = ref()
@@ -17,6 +22,18 @@
   let chatIsOn    = ref( false )
 
 
+  let promts = {
+    welcome: 'Привет! Посоветуй случайный фильм или сериал',
+    another: 'Спасибо! Предложи другой фильм или сериал',
+    formatter: ` ОЧЕНЬ ВАЖНО! Отвечай и веди диалог обязательно на языке с обозначением ${locale} и только на нём! Ссылки на фацлы можно не переводить
+      Верни ответ строго в следующем формате и только в этом формате: 
+      { 
+        'title' : название фильма или сериала, 
+        'poster' : прямая ссылка на официальный постер для фильма или сериала
+        'desc' : развернутое описание фильма или сериала 
+      }
+    `,
+  }
 
 
   function setFilm (data) {
@@ -40,6 +57,8 @@
     res  = await dbase.sendPromt(promt)
     showLoader.value = false
     setFilm(res)
+
+    console.log(res);
   }
 
 
@@ -77,9 +96,10 @@
   onMounted(async () => {
     // { id, locale, start_promt, another_promt, trailer}
     let film = await dbase.getCachedFilm(locale)
-    promts = await dbase.getPromts(locale)
 
+    // promts = await dbase.getPromts(locale)
     console.log(promts);
+
 
     title.value = film.title
     poster.value = film.poster
@@ -132,6 +152,7 @@
     </div>
 
   </section>
+
 </template>
 
 <style scoped>
