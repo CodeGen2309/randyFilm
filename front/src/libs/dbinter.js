@@ -37,7 +37,7 @@ export default {
 
 
   saveFilm: async function (locale, title, poster, desc) {
-    let link = `${this.address}/save-film/`
+    let link = `${this.baseapi}/save-film.php`
 
     let res = await fetch(link, { 
       method: 'POST', 
@@ -45,7 +45,7 @@ export default {
       body: JSON.stringify({locale, title, poster, desc})
     })
 
-    return await res.json()
+    return await res.text()
   },
 
 

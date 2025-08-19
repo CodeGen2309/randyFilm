@@ -23,17 +23,34 @@ class Dbinterface {
     );
   }
 
-  function dbInsert($table, $data) {
+  function dbInsert($table, $keyString, $valueString) {
     $db = $this -> conn;
-    $query = $db -> prepare("INSERT INTO $table SET ?");
-    $query->execute([$data]);
+    $query = $db -> prepare("INSERT INTO $table ($keyString) VALUES ($valueString)");
+    $query->execute();
+
+    return $db -> lastInsertId();
+  }
+
+
+  function saveFilm($locale, $title, $poster, $desc) {
+    $db = $this -> conn;
+    $query = "
+      INSERT INTO films (`locale`, `title`, `poster`, `desc`)
+      VALUES (\"$locale\", \"$title\", \"$poster\", \"$desc\")
+    ";
+
+    print_r($query);
+
+    $res = $db -> prepare($query);
+    $res->execute();
+
 
     return $db -> lastInsertId();
   }
 
 
   function dbSelect($table, $where = null) {
-    $db = $this -> conn;
+    $db    = $this -> conn;
     $query = "SELECT * FROM $table";
 
     if ($where != null) {

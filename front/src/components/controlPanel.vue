@@ -2,11 +2,13 @@
   import upvote from '@/components/icons/upvote.vue';
   import { ref } from 'vue';
 
+  const emit = defineEmits(['like', 'google', 'toggleChat', 'updateFilm'])
 
   let upvoteColor = ref('#cd7066')
 
   function setGreen () {
     upvoteColor.value = '#27ae60'
+    emit('like')
   }
 </script>
 
