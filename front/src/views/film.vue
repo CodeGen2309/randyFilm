@@ -9,9 +9,10 @@
   // let promts
   let isHandShake = false
 
-  let webapp   = window.Telegram.WebApp
-  let userData = webapp.initDataUnsafe.user
-  let locale   = userData.language_code
+  let webapp    = window.Telegram.WebApp
+  let userData  = webapp.initDataUnsafe.user
+  let locale    = userData.language_code
+  let bannerUrl = 'https://t.me/Capybombbot?start=_tgr_uo0J5Wo5YjNi'
 
   let title       = ref()
   let poster      = ref()
@@ -19,6 +20,7 @@
   let currMessage = ref()
   
   let showLoader  = ref( false )
+  let showBanner  = ref( false )
   let chatIsOn    = ref( false )
 
 
@@ -145,7 +147,11 @@
 
 
       <transition name="fadeInAnim">
-        <div v-if="showLoader" class="rf--loader">
+        <div v-if="showLoader" class="rf--loader"> 
+          <a class="rf--banner" :href="bannerUrl">
+            <img class="rf--bannerImg" src="/public/images/poster.jpg">
+          </a>
+
           <FadingRect class="rf--loaderIcon"></FadingRect>
         </div>
       </transition>
@@ -190,6 +196,27 @@
     background: rgba(0, 0, 0, .8);
     opacity: 1;
     transition: .3s;
+  }
+
+
+  .rf--banner {
+    position: absolute;
+    bottom: 0;
+
+    width: 100%; height: 200px;
+    /* padding: 20px; */
+    box-sizing: border-box;
+    overflow: hidden;
+
+    display: flex;
+  }
+
+  .rf--bannerImg {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+    object-position: bottom center;
   }
 
 
