@@ -3,7 +3,7 @@
 function sendPromt($message) {
   $file     = file_get_contents('../tokens.json');
   $tokens   = json_decode($file, true);
-  // $neiroURL = $token['n8nTest'];
+  // $neiroURL = $tokens['n8nTest'];
   $neiroURL = $tokens['n8nProd'];
 
   $crlReq  = curl_init();
@@ -25,11 +25,6 @@ function sendPromt($message) {
   return $crlRes;
 }
 
-
-
-// $res = sendPromt($_POST['message']);
-// print(json_encode($res));
-// $data = json_decode($_POST);
 
 $raw = file_get_contents('php://input');
 $data = json_decode($raw);

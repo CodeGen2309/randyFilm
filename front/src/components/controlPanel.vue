@@ -2,7 +2,8 @@
   import upvote from '@/components/icons/upvote.vue';
   import { ref } from 'vue';
 
-  const emit = defineEmits(['like', 'google', 'toggleChat', 'updateFilm'])
+  const emit = defineEmits(['like', 'google', 'toggleChat', 'updateFilm', 'addhome'])
+  const props = defineProps(['isInHome'])
 
   let upvoteColor = ref('#cd7066')
 
@@ -15,13 +16,16 @@
 
 <template>
 <ul class="ctpanel">
-  <!-- <li class="ctpanel--item" @click="$emit('like')">
-    <img class="ctpanel--icon" src="/assets/icons/upvote.svg">
-  </li> -->
-
-  <li class="ctpanel--item">
-    <upvote :color="upvoteColor" @click="setGreen"></upvote>
+  <li class="ctpanel--item" @click="$emit('addhome')"
+    v-if="isInHome == 'missed'"
+  >
+    <img class="ctpanel--icon" src="/assets/icons/add-home.png">
   </li>
+
+
+  <!-- <li class="ctpanel--item" v-if="isInHome != 'missed'" @click="emit('like')">
+     <img class="ctpanel--icon" src="/assets/icons/like.svg">
+  </li> -->
 
   <li class="ctpanel--item" @click="$emit('google')">
     <img class="ctpanel--icon" src="/assets/icons/google.svg">
@@ -50,6 +54,7 @@
 
     padding: 0;
     list-style: none;
+    transition: .3s ease;
   }
 
   .ctpanel--item {
@@ -69,6 +74,7 @@
 
   .ctpanel--icon {
     width: 100%; height: 100%;
+    object-fit: contain;
+    object-position: center;
   }
-
 </style>

@@ -12,6 +12,7 @@
   let webapp    = window.Telegram.WebApp
   let userData  = webapp.initDataUnsafe.user
   let locale    = userData.language_code
+  // let locale    = 'fr'
   let bannerUrl = 'https://t.me/Capybombbot?start=_tgr_uo0J5Wo5YjNi'
 
   let title       = ref()
@@ -22,6 +23,7 @@
   let showLoader  = ref( false )
   let showBanner  = ref( false )
   let chatIsOn    = ref( false )
+  let isInHome    = ref( false )
 
 
   let promts = {
@@ -29,11 +31,11 @@
     another: 'Спасибо! Предложи другой фильм или сериал',
     formatter: ` 
       ОЧЕНЬ ВАЖНО! Отвечай и веди диалог обязательно на языке с обозначением ${locale} и только на нём!
-      Верни ответ строго в следующем формате и только в этом формате: 
+      Верни ответ строго в следующем json-формате и только в этом формате: 
       { 
         'title' : название фильма или сериала, 
-        'poster' : прямая ссылка на официальный постер для фильма или сериалаб не используй картинки с сайта wikimedia
-        'desc' : развернутое описание фильма или сериала 
+        'desc' : развернутое описание фильма или сериала,
+        'imdbid' : id фильма или сериала на айте imdb.com,
       }
     `,
   }
@@ -60,19 +62,22 @@
     res  = await dbase.sendPromt(promt)
     showLoader.value = false
     setFilm(res)
-
-    console.log(res);
   }
 
 
   async function saveFilm () {
-    let req = await dbase.saveFilm(locale, title.value, poster.value, desc.value)
-    return req
+    let markup = `
+      <img src = "${poster.value}"></img>
+      <h3>${title.value}</h3>
+      <p>${desc.value}</p>
+    `
+
+    webapp.sendData(markup)
   }
 
   async function googleFilm () {
     let link = `https://www.google.com/search?q=${title.value} film watch online`
-    window.open(link)
+    webapp.openLink(link)
   }
 
   async function toggleChat () {
@@ -88,10 +93,23 @@
     currMessage.value = ''
 
     showLoader.value = true
-    res  = await dbase.sendPromt(promt)
+    res  = await dbase.sendPromt(`${promt} ${promts.formatter}`)
     showLoader.value = false
 
     setFilm(res)
+  }
+
+
+  function addToHome () {
+    webapp.addToHomeScreen()
+    isInHome.value = 'added'
+  }
+
+
+  function checkHome () {
+    webapp.checkHomeScreenStatus(res => {
+      isInHome.value = res
+    }) 
   }
 
 
@@ -106,6 +124,7 @@
     title.value = film.title
     poster.value = film.poster
     desc.value = film.desc
+    isInHome.value = checkHome()
   })
 
 </script>
@@ -131,10 +150,15 @@
         </div>
       </div>
 
-      <contPane class="rf--controlsList" 
-        @updateFilm="anotherFilm" @like="saveFilm"
-        @toggleChat="toggleChat"  @google="googleFilm"
-      ></contPane>
+
+      <transition name="fadeUpAnim">
+        <contPane class="rf--controlsList" 
+          @updateFilm="anotherFilm" @like="saveFilm"
+          @toggleChat="toggleChat"  @google="googleFilm"
+          @addhome="addToHome"
+          :isInHome = "isInHome" :key="isInHome"
+        ></contPane>
+      </transition>
 
       <transition name="fadeDownAnim">
         <form @submit.prevent="sendMessage" class="rf--chat" v-show="chatIsOn">
@@ -381,6 +405,11 @@
     opacity: 0;
     transform: translateY(-50px);
     backdrop-filter: blur(0px);
+  }
+
+  .fadeUpAnim-enter-active, .fadeDownAnim-leave-active {
+    opacity: 0;
+    transform: translateY(50px);
   }
 
 </style>
