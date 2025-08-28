@@ -13,12 +13,18 @@
   let userData  = webapp.initDataUnsafe.user
   let locale    = userData.language_code
   // let locale    = 'fr'
-  let bannerUrl = 'https://t.me/Capybombbot?start=_tgr_uo0J5Wo5YjNi'
+
+
+  let cobybaraUrl = 'https://t.me/Capybombbot?start=_tgr_uo0J5Wo5YjNi'
+  let starBotUrl = 'https://t.me/lzvezdochkabot?start=_tgr_E_839TViNzM6'
+  let bannerUrl = starBotUrl
 
   let title       = ref()
   let poster      = ref()
   let desc        = ref()
   let currMessage = ref()
+  let loadCounter = ref(20)
+  let counter = false 
   
   let showLoader  = ref( false )
   let showBanner  = ref( false )
@@ -41,6 +47,24 @@
   }
 
 
+  function runCounter () {
+    loadCounter.value = 20
+
+    counter = setInterval(() => {
+      loadCounter.value--
+
+      if (loadCounter.value == 0) {
+        clearInterval(counter)
+      }
+    }, 1000)
+  }
+
+
+  function stopCounter () {
+    clearInterval(counter)
+  }
+
+
   function setFilm (data) {
     title.value  = data.title
     poster.value = data.poster
@@ -59,8 +83,12 @@
     }
 
     showLoader.value = true
+    runCounter()
+
     res  = await dbase.sendPromt(promt)
     showLoader.value = false
+    stopCounter()
+
     setFilm(res)
   }
 
@@ -92,9 +120,13 @@
     chatIsOn.value = false
     currMessage.value = ''
 
+    
     showLoader.value = true
+    runCounter()
+    
     res  = await dbase.sendPromt(`${promt} ${promts.formatter}`)
     showLoader.value = false
+    stopCounter()
 
     setFilm(res)
   }
@@ -131,8 +163,6 @@
 
 <template>
   <section class="rf">
-    <!-- <div class="rf--ad">Здесь будет реклама</div> -->
-
     <div class="rf--film">
       <div class="rf--cover"></div>
 
@@ -163,7 +193,7 @@
       <transition name="fadeDownAnim">
         <form @submit.prevent="sendMessage" class="rf--chat" v-show="chatIsOn">
           <input class="rf--chatInput" v-model="currMessage" 
-            type="textarea"
+            type="textarea" placeholder="Ask Randy"
           >
           <input class="rf--chatSend" type="submit" value="SEND">
         </form>
@@ -173,10 +203,11 @@
       <transition name="fadeInAnim">
         <div v-if="showLoader" class="rf--loader"> 
           <a class="rf--banner" :href="bannerUrl">
-            <img class="rf--bannerImg" src="/public/images/poster.jpg">
+            <img class="rf--bannerImg" src="/public/images/starbot.jpeg">
           </a>
 
           <FadingRect class="rf--loaderIcon"></FadingRect>
+          <p class="rf--loaderCounter">{{ loadCounter }} s.</p>
         </div>
       </transition>
     </div>
@@ -220,6 +251,16 @@
     background: rgba(0, 0, 0, .8);
     opacity: 1;
     transition: .3s;
+  }
+
+
+  .rf--loaderCounter {
+    position: absolute;
+    margin: 0; padding: 0;
+    font-size: 1.3rem;
+    z-index: inherit;
+    text-align: center;
+    color: aliceblue;
   }
 
 
